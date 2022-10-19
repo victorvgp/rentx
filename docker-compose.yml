@@ -1,0 +1,31 @@
+version: "3.1"
+services:
+   database_ignite:
+      image: mongo
+      container_name: database_ignite
+      restart: always
+      ports:
+         - 8081:8081
+      environment:
+         MONGO_INITDB_ROOT_USERNAME: root
+         MONGO_INITDB_ROOT_PASSWORD: root
+      volumes:
+         - mongodb_data:/data/mongodb
+
+   app:
+      build: .
+      container_name: rentx
+      ports:
+         - 3333:3333
+      environment: 
+         - MONGODB_CONNSTRING=mongodb://root:root@mongodb
+      volumes:
+         - .:/usr/app
+      links:
+         - database_ignite
+      depends_on:
+         - database_ignite
+
+volumes:
+   mongodb_data:
+      driver: local
